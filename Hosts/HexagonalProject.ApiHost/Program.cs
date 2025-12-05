@@ -1,11 +1,6 @@
-﻿using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
-using HexagonalSample.Application.PrimaryPorts.ProductPorts;
-using HexagonalSample.Application.UseCases.CategoryUseCases;
-using HexagonalSample.Application.UseCases.ProductUseCases;
+﻿using HexagonalSample.Application.DependencyResolvers;
 using HexagonalSample.Persistence.DependencyResolvers;
-using HexagonalSample.Persistence.EFData;
 using HexagonalSample.WebApi.Controllers;
-using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,12 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-//Todo: => UseCase Resolving Refactoring
-//Todo: Mediator paterni refactoring
 builder.Services.AddRepositoryService();
-builder.Services.AddScoped<ICreateCategoryUseCase, CreateCategoryUseCase>();
-builder.Services.AddScoped<ICreateProductUseCase, CreateProductUseCase>();
-builder.Services.AddDbContext<MyContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+builder.Services.AddUseCaseServices();
+builder.Services.AddDbContextService(builder.Configuration);
 
 
 

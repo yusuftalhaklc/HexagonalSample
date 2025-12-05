@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace HexagonalSample.Persistence.DependencyResolvers
 {
-    //Todo DbContextResolver Refactoring
     public static class RepositoryResolver
     {
         public static void AddRepositoryService(this IServiceCollection services)
