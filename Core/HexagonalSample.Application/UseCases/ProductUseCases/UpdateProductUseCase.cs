@@ -30,6 +30,7 @@ namespace HexagonalSample.Application.UseCases.ProductUseCases
             product.UnitPrice = command.Price;
             product.CategoryId = command.CategoryId;
             product.UpdatedDate = DateTime.Now;
+            product.Status = Domain.Enums.DataStatus.Updated;
 
             await _repository.UpdateAsync(product);
         }

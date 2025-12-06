@@ -28,7 +28,8 @@ namespace HexagonalSample.Application.UseCases.ProductUseCases
                 ProductName = command.Name,
                 UnitPrice = command.Price,
                 CategoryId = command.CategoryId,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+                Status = Domain.Enums.DataStatus.Inserted
             };
            
             await _repository.CreateAsync(product);

@@ -29,6 +29,7 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
             category.CategoryName = command.Name;
             category.Description = command.Description;
             category.UpdatedDate = DateTime.Now;
+            category.Status = Domain.Enums.DataStatus.Updated;
 
             await _repository.UpdateAsync(category);
         }

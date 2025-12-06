@@ -26,10 +26,11 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
             Category category = new()
             {
                 CategoryName = command.Name,
-                Description = command.Description
+                Description = command.Description,
+                CreatedDate = DateTime.Now,
+                Status = Domain.Enums.DataStatus.Inserted
             };
 
-            category.CreatedDate = DateTime.Now;
             await _repository.CreateAsync(category);
         }
     }
