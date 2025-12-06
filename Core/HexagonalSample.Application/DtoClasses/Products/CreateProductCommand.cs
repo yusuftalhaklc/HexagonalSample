@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MediatR;
 
 namespace HexagonalSample.Application.DtoClasses.Products
 {
-    public class CreateProductCommand
+    public class CreateProductCommand : IRequest<Unit>
     {
         public string Name { get; set; }
         public decimal Price { get; set; }
         public int? CategoryId { get; set; }
-
     }
 }

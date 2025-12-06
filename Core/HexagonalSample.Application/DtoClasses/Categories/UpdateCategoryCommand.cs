@@ -1,6 +1,8 @@
+using MediatR;
+
 namespace HexagonalSample.Application.DtoClasses.Categories
 {
-    public class UpdateCategoryCommand
+    public class UpdateCategoryCommand : IRequest<Unit>
     {
         public int Id { get; set; }
         public string Name { get; set; }

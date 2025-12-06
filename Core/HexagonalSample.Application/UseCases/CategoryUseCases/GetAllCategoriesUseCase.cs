@@ -1,10 +1,10 @@
 using HexagonalSample.Application.DtoClasses.Categories;
-using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
 using HexagonalSample.Domain.SecondaryPorts;
+using MediatR;
 
 namespace HexagonalSample.Application.UseCases.CategoryUseCases
 {
-    public class GetAllCategoriesUseCase : IGetAllCategoriesUseCase
+    public class GetAllCategoriesUseCase : IRequestHandler<GetAllCategoriesQuery, List<CategoryResult>>
     {
         private readonly ICategoryRepository _repository;
 
@@ -13,7 +13,7 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
             _repository = repository;
         }
 
-        public async Task<List<CategoryResult>> ExecuteAsync(GetAllCategoriesQuery query)
+        public async Task<List<CategoryResult>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
             var categories = await _repository.GetAllAsync();
 

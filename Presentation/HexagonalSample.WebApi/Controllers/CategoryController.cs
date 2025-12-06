@@ -1,5 +1,7 @@
-﻿using HexagonalSample.Application.DtoClasses.Categories;
-using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
+using AutoMapper;
+using HexagonalSample.Application.DtoClasses.Categories;
+using HexagonalSample.Application.DtoClasses.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HexagonalSample.WebApi.Controllers
@@ -10,24 +12,13 @@ namespace HexagonalSample.WebApi.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICreateCategoryUseCase _createCategoryUseCase;
-        private readonly IUpdateCategoryUseCase _updateCategoryUseCase;
-        private readonly IDeleteCategoryUseCase _deleteCategoryUseCase;
-        private readonly IGetCategoryByIdUseCase _getCategoryByIdUseCase;
-        private readonly IGetAllCategoriesUseCase _getAllCategoriesUseCase;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public CategoryController(
-            ICreateCategoryUseCase createCategoryUseCase,
-            IUpdateCategoryUseCase updateCategoryUseCase,
-            IDeleteCategoryUseCase deleteCategoryUseCase,
-            IGetCategoryByIdUseCase getCategoryByIdUseCase,
-            IGetAllCategoriesUseCase getAllCategoriesUseCase)
+        public CategoryController(IMediator mediator, IMapper mapper)
         {
-            _createCategoryUseCase = createCategoryUseCase;
-            _updateCategoryUseCase = updateCategoryUseCase;
-            _deleteCategoryUseCase = deleteCategoryUseCase;
-            _getCategoryByIdUseCase = getCategoryByIdUseCase;
-            _getAllCategoriesUseCase = getAllCategoriesUseCase;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -35,13 +26,8 @@ namespace HexagonalSample.WebApi.Controllers
         {
             try
             {
-                CreateCategoryCommand command = new()
-                {
-                    Name = request.Name,
-                    Description = request.Description
-                };
-
-                await _createCategoryUseCase.ExecuteAsync(command);
+                var command = _mapper.Map<CreateCategoryCommand>(request);
+                await _mediator.Send(command);
                 return Ok("Category created successfully");
             }
             catch (Exception ex)
@@ -55,14 +41,9 @@ namespace HexagonalSample.WebApi.Controllers
         {
             try
             {
-                UpdateCategoryCommand command = new()
-                {
-                    Id = id,
-                    Name = request.Name,
-                    Description = request.Description
-                };
-
-                await _updateCategoryUseCase.ExecuteAsync(command);
+                var command = _mapper.Map<UpdateCategoryCommand>(request);
+                command.Id = id;
+                await _mediator.Send(command);
                 return Ok("Category updated successfully");
             }
             catch (Exception ex)
@@ -81,7 +62,7 @@ namespace HexagonalSample.WebApi.Controllers
                     Id = id
                 };
 
-                await _deleteCategoryUseCase.ExecuteAsync(command);
+                await _mediator.Send(command);
                 return Ok("Category deleted successfully");
             }
             catch (Exception ex)
@@ -100,7 +81,7 @@ namespace HexagonalSample.WebApi.Controllers
                     Id = id
                 };
 
-                var result = await _getCategoryByIdUseCase.ExecuteAsync(query);
+                var result = await _mediator.Send(query);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -115,7 +96,7 @@ namespace HexagonalSample.WebApi.Controllers
             try
             {
                 GetAllCategoriesQuery query = new();
-                var results = await _getAllCategoriesUseCase.ExecuteAsync(query);
+                var results = await _mediator.Send(query);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -124,7 +105,5 @@ namespace HexagonalSample.WebApi.Controllers
             }
         }
 
-        public record CreateCategoryRequest(string Name, string Description);
-        public record UpdateCategoryRequest(string Name, string Description);
     }
 }

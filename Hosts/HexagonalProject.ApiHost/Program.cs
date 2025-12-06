@@ -1,4 +1,4 @@
-﻿using HexagonalSample.Application.DependencyResolvers;
+using HexagonalSample.Application.DependencyResolvers;
 using HexagonalSample.Persistence.DependencyResolvers;
 using HexagonalSample.WebApi.Controllers;
 
@@ -12,8 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddRepositoryService();
-builder.Services.AddUseCaseServices();
 builder.Services.AddDbContextService(builder.Configuration);
+builder.Services.AddMediatRServices();
+builder.Services.AddMapperServices();
 
 
 

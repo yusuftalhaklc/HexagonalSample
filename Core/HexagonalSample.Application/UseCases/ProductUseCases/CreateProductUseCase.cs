@@ -1,16 +1,11 @@
-﻿using HexagonalSample.Application.DtoClasses.Products;
-using HexagonalSample.Application.PrimaryPorts.ProductPorts;
+using HexagonalSample.Application.DtoClasses.Products;
 using HexagonalSample.Domain.Entities;
 using HexagonalSample.Domain.SecondaryPorts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MediatR;
 
 namespace HexagonalSample.Application.UseCases.ProductUseCases
 {
-    public class CreateProductUseCase : ICreateProductUseCase
+    public class CreateProductUseCase : IRequestHandler<CreateProductCommand, Unit>
     {
         private readonly IProductRepository _repository;
 
@@ -19,16 +14,18 @@ namespace HexagonalSample.Application.UseCases.ProductUseCases
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(CreateProductCommand command)
+        public async Task<Unit> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             Product product = new Product()
             {
-                ProductName = command.Name,
-                UnitPrice = command.Price,
+                ProductName = request.Name,
+                UnitPrice = request.Price,
+                CategoryId = request.CategoryId,
                 CreatedDate = DateTime.Now
             };
            
             await _repository.CreateAsync(product);
+            return Unit.Value;
         }
     }
 }

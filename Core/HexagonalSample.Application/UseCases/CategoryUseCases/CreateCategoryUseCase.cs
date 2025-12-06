@@ -1,16 +1,11 @@
-﻿using HexagonalSample.Application.DtoClasses.Categories;
-using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
+using HexagonalSample.Application.DtoClasses.Categories;
 using HexagonalSample.Domain.Entities;
 using HexagonalSample.Domain.SecondaryPorts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MediatR;
 
 namespace HexagonalSample.Application.UseCases.CategoryUseCases
 {
-    public class CreateCategoryUseCase : ICreateCategoryUseCase
+    public class CreateCategoryUseCase : IRequestHandler<CreateCategoryCommand, Unit>
     {
         private readonly ICategoryRepository _repository;
 
@@ -19,16 +14,17 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(CreateCategoryCommand command)
+        public async Task<Unit> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             Category category = new()
             {
-                CategoryName = command.Name,
-                Description = command.Description
+                CategoryName = request.Name,
+                Description = request.Description
             };
 
             category.CreatedDate = DateTime.Now;
             await _repository.CreateAsync(category);
+            return Unit.Value;
         }
     }
 }

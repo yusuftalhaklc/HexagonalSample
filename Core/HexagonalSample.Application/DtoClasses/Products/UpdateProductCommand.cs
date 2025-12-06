@@ -1,6 +1,8 @@
+using MediatR;
+
 namespace HexagonalSample.Application.DtoClasses.Products
 {
-    public class UpdateProductCommand
+    public class UpdateProductCommand : IRequest<Unit>
     {
         public int Id { get; set; }
         public string Name { get; set; }

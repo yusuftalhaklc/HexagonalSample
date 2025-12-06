@@ -1,10 +1,10 @@
 using HexagonalSample.Application.DtoClasses.Products;
-using HexagonalSample.Application.PrimaryPorts.ProductPorts;
 using HexagonalSample.Domain.SecondaryPorts;
+using MediatR;
 
 namespace HexagonalSample.Application.UseCases.ProductUseCases
 {
-    public class GetAllProductsUseCase : IGetAllProductsUseCase
+    public class GetAllProductsUseCase : IRequestHandler<GetAllProductsQuery, List<ProductResult>>
     {
         private readonly IProductRepository _repository;
 
@@ -13,7 +13,7 @@ namespace HexagonalSample.Application.UseCases.ProductUseCases
             _repository = repository;
         }
 
-        public async Task<List<ProductResult>> ExecuteAsync(GetAllProductsQuery query)
+        public async Task<List<ProductResult>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
             var products = await _repository.GetAllAsync();
 

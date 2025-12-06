@@ -1,10 +1,10 @@
 using HexagonalSample.Application.DtoClasses.Categories;
-using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
 using HexagonalSample.Domain.SecondaryPorts;
+using MediatR;
 
 namespace HexagonalSample.Application.UseCases.CategoryUseCases
 {
-    public class DeleteCategoryUseCase : IDeleteCategoryUseCase
+    public class DeleteCategoryUseCase : IRequestHandler<DeleteCategoryCommand, Unit>
     {
         private readonly ICategoryRepository _repository;
 
@@ -13,13 +13,14 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(DeleteCategoryCommand command)
+        public async Task<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = await _repository.GetByIdAsync(command.Id);
+            var category = await _repository.GetByIdAsync(request.Id);
             if (category == null)
-                throw new Exception($"Category with id {command.Id} not found");
+                throw new Exception($"Category with id {request.Id} not found");
 
-            await _repository.DeleteAsync(command.Id);
+            await _repository.DeleteAsync(request.Id);
+            return Unit.Value;
         }
     }
 }

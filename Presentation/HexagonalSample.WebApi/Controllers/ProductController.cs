@@ -1,5 +1,7 @@
+using AutoMapper;
 using HexagonalSample.Application.DtoClasses.Products;
-using HexagonalSample.Application.PrimaryPorts.ProductPorts;
+using HexagonalSample.Application.DtoClasses.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HexagonalSample.WebApi.Controllers
@@ -8,24 +10,13 @@ namespace HexagonalSample.WebApi.Controllers
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly ICreateProductUseCase _createProductUseCase;
-        private readonly IUpdateProductUseCase _updateProductUseCase;
-        private readonly IDeleteProductUseCase _deleteProductUseCase;
-        private readonly IGetProductByIdUseCase _getProductByIdUseCase;
-        private readonly IGetAllProductsUseCase _getAllProductsUseCase;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public ProductController(
-            ICreateProductUseCase createProductUseCase,
-            IUpdateProductUseCase updateProductUseCase,
-            IDeleteProductUseCase deleteProductUseCase,
-            IGetProductByIdUseCase getProductByIdUseCase,
-            IGetAllProductsUseCase getAllProductsUseCase)
+        public ProductController(IMediator mediator, IMapper mapper)
         {
-            _createProductUseCase = createProductUseCase;
-            _updateProductUseCase = updateProductUseCase;
-            _deleteProductUseCase = deleteProductUseCase;
-            _getProductByIdUseCase = getProductByIdUseCase;
-            _getAllProductsUseCase = getAllProductsUseCase;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -33,14 +24,8 @@ namespace HexagonalSample.WebApi.Controllers
         {
             try
             {
-                CreateProductCommand command = new()
-                {
-                    Name = request.Name,
-                    Price = request.Price,
-                    CategoryId = request.CategoryId
-                };
-
-                await _createProductUseCase.ExecuteAsync(command);
+                var command = _mapper.Map<CreateProductCommand>(request);
+                await _mediator.Send(command);
                 return Ok("Product created successfully");
             }
             catch (Exception ex)
@@ -54,15 +39,9 @@ namespace HexagonalSample.WebApi.Controllers
         {
             try
             {
-                UpdateProductCommand command = new()
-                {
-                    Id = id,
-                    Name = request.Name,
-                    Price = request.Price,
-                    CategoryId = request.CategoryId
-                };
-
-                await _updateProductUseCase.ExecuteAsync(command);
+                var command = _mapper.Map<UpdateProductCommand>(request);
+                command.Id = id;
+                await _mediator.Send(command);
                 return Ok("Product updated successfully");
             }
             catch (Exception ex)
@@ -81,7 +60,7 @@ namespace HexagonalSample.WebApi.Controllers
                     Id = id
                 };
 
-                await _deleteProductUseCase.ExecuteAsync(command);
+                await _mediator.Send(command);
                 return Ok("Product deleted successfully");
             }
             catch (Exception ex)
@@ -100,7 +79,7 @@ namespace HexagonalSample.WebApi.Controllers
                     Id = id
                 };
 
-                var result = await _getProductByIdUseCase.ExecuteAsync(query);
+                var result = await _mediator.Send(query);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -115,7 +94,7 @@ namespace HexagonalSample.WebApi.Controllers
             try
             {
                 GetAllProductsQuery query = new();
-                var results = await _getAllProductsUseCase.ExecuteAsync(query);
+                var results = await _mediator.Send(query);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -124,8 +103,6 @@ namespace HexagonalSample.WebApi.Controllers
             }
         }
 
-        public record CreateProductRequest(string Name, decimal Price, int? CategoryId);
-        public record UpdateProductRequest(string Name, decimal Price, int? CategoryId);
     }
 }
 

@@ -1,10 +1,10 @@
 using HexagonalSample.Application.DtoClasses.Products;
-using HexagonalSample.Application.PrimaryPorts.ProductPorts;
 using HexagonalSample.Domain.SecondaryPorts;
+using MediatR;
 
 namespace HexagonalSample.Application.UseCases.ProductUseCases
 {
-    public class DeleteProductUseCase : IDeleteProductUseCase
+    public class DeleteProductUseCase : IRequestHandler<DeleteProductCommand, Unit>
     {
         private readonly IProductRepository _repository;
 
@@ -13,13 +13,14 @@ namespace HexagonalSample.Application.UseCases.ProductUseCases
             _repository = repository;
         }
 
-        public async Task ExecuteAsync(DeleteProductCommand command)
+        public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            var product = await _repository.GetByIdAsync(command.Id);
+            var product = await _repository.GetByIdAsync(request.Id);
             if (product == null)
-                throw new Exception($"Product with id {command.Id} not found");
+                throw new Exception($"Product with id {request.Id} not found");
 
-            await _repository.DeleteAsync(command.Id);
+            await _repository.DeleteAsync(request.Id);
+            return Unit.Value;
         }
     }
 }
