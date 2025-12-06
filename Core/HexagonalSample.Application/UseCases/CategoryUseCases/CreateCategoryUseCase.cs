@@ -1,11 +1,12 @@
 using HexagonalSample.Application.DtoClasses.Categories;
+using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
 using HexagonalSample.Domain.Entities;
 using HexagonalSample.Domain.SecondaryPorts;
 using MediatR;
 
 namespace HexagonalSample.Application.UseCases.CategoryUseCases
 {
-    public class CreateCategoryUseCase : IRequestHandler<CreateCategoryCommand, Unit>
+    public class CreateCategoryUseCase : ICreateCategoryUseCase
     {
         private readonly ICategoryRepository _repository;
 
@@ -16,15 +17,20 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
 
         public async Task<Unit> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
+            await ExecuteAsync(request);
+            return Unit.Value;
+        }
+
+        public async Task ExecuteAsync(CreateCategoryCommand command)
+        {
             Category category = new()
             {
-                CategoryName = request.Name,
-                Description = request.Description
+                CategoryName = command.Name,
+                Description = command.Description
             };
 
             category.CreatedDate = DateTime.Now;
             await _repository.CreateAsync(category);
-            return Unit.Value;
         }
     }
 }

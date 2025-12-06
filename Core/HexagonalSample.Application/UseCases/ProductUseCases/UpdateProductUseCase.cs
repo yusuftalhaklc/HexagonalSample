@@ -1,10 +1,11 @@
 using HexagonalSample.Application.DtoClasses.Products;
+using HexagonalSample.Application.PrimaryPorts.ProductPorts;
 using HexagonalSample.Domain.SecondaryPorts;
 using MediatR;
 
 namespace HexagonalSample.Application.UseCases.ProductUseCases
 {
-    public class UpdateProductUseCase : IRequestHandler<UpdateProductCommand, Unit>
+    public class UpdateProductUseCase : IUpdateProductUseCase
     {
         private readonly IProductRepository _repository;
 
@@ -15,17 +16,22 @@ namespace HexagonalSample.Application.UseCases.ProductUseCases
 
         public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var product = await _repository.GetByIdAsync(request.Id);
-            if (product == null)
-                throw new Exception($"Product with id {request.Id} not found");
+            await ExecuteAsync(request);
+            return Unit.Value;
+        }
 
-            product.ProductName = request.Name;
-            product.UnitPrice = request.Price;
-            product.CategoryId = request.CategoryId;
+        public async Task ExecuteAsync(UpdateProductCommand command)
+        {
+            var product = await _repository.GetByIdAsync(command.Id);
+            if (product == null)
+                throw new Exception($"Product with id {command.Id} not found");
+
+            product.ProductName = command.Name;
+            product.UnitPrice = command.Price;
+            product.CategoryId = command.CategoryId;
             product.UpdatedDate = DateTime.Now;
 
             await _repository.UpdateAsync(product);
-            return Unit.Value;
         }
     }
 }

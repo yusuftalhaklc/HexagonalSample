@@ -1,15 +1,10 @@
-﻿using HexagonalSample.Application.DtoClasses.Products;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HexagonalSample.Application.DtoClasses.Products;
+using MediatR;
 
 namespace HexagonalSample.Application.PrimaryPorts.ProductPorts
 {
-    public interface ICreateProductUseCase
+    public interface ICreateProductUseCase : IRequestHandler<CreateProductCommand, Unit>
     {
         Task ExecuteAsync(CreateProductCommand command);
-
     }
 }

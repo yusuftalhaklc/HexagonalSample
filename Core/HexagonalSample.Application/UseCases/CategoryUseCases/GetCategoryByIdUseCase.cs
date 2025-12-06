@@ -1,10 +1,11 @@
 using HexagonalSample.Application.DtoClasses.Categories;
+using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
 using HexagonalSample.Domain.SecondaryPorts;
 using MediatR;
 
 namespace HexagonalSample.Application.UseCases.CategoryUseCases
 {
-    public class GetCategoryByIdUseCase : IRequestHandler<GetCategoryByIdQuery, CategoryResult>
+    public class GetCategoryByIdUseCase : IGetCategoryByIdUseCase
     {
         private readonly ICategoryRepository _repository;
 
@@ -15,9 +16,14 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
 
         public async Task<CategoryResult> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var category = await _repository.GetByIdAsync(request.Id);
+            return await ExecuteAsync(request);
+        }
+
+        public async Task<CategoryResult> ExecuteAsync(GetCategoryByIdQuery query)
+        {
+            var category = await _repository.GetByIdAsync(query.Id);
             if (category == null)
-                throw new Exception($"Category with id {request.Id} not found");
+                throw new Exception($"Category with id {query.Id} not found");
 
             return new CategoryResult
             {

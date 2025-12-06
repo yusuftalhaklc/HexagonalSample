@@ -2,7 +2,7 @@ using HexagonalSample.Domain.Entities;
 
 namespace HexagonalSample.Domain.SecondaryPorts
 {
-    public interface ICategoryRepository : IRepository<Category>
+    public interface IAppUserRepository : IRepository<AppUser>
     {
     }
 }

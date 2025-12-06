@@ -1,10 +1,11 @@
 using HexagonalSample.Application.DtoClasses.Categories;
+using HexagonalSample.Application.PrimaryPorts.CategoryPorts;
 using HexagonalSample.Domain.SecondaryPorts;
 using MediatR;
 
 namespace HexagonalSample.Application.UseCases.CategoryUseCases
 {
-    public class UpdateCategoryUseCase : IRequestHandler<UpdateCategoryCommand, Unit>
+    public class UpdateCategoryUseCase : IUpdateCategoryUseCase
     {
         private readonly ICategoryRepository _repository;
 
@@ -15,16 +16,21 @@ namespace HexagonalSample.Application.UseCases.CategoryUseCases
 
         public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = await _repository.GetByIdAsync(request.Id);
-            if (category == null)
-                throw new Exception($"Category with id {request.Id} not found");
+            await ExecuteAsync(request);
+            return Unit.Value;
+        }
 
-            category.CategoryName = request.Name;
-            category.Description = request.Description;
+        public async Task ExecuteAsync(UpdateCategoryCommand command)
+        {
+            var category = await _repository.GetByIdAsync(command.Id);
+            if (category == null)
+                throw new Exception($"Category with id {command.Id} not found");
+
+            category.CategoryName = command.Name;
+            category.Description = command.Description;
             category.UpdatedDate = DateTime.Now;
 
             await _repository.UpdateAsync(category);
-            return Unit.Value;
         }
     }
 }
