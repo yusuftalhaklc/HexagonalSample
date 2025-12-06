@@ -4,9 +4,9 @@ using HexagonalSample.Persistence.EFData;
 
 namespace HexagonalSample.Persistence.EFRepositories
 {
-    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
+    public class AppUserProfileRepository : BaseRepository<AppUserProfile>, IAppUserProfileRepository
     {
-        public CategoryRepository(MyContext context) : base(context)
+        public AppUserProfileRepository(MyContext context) : base(context)
         {
         }
     }

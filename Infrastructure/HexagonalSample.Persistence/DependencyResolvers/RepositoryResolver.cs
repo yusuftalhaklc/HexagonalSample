@@ -1,11 +1,6 @@
-﻿using HexagonalSample.Domain.SecondaryPorts;
+using HexagonalSample.Domain.SecondaryPorts;
 using HexagonalSample.Persistence.EFRepositories;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HexagonalSample.Persistence.DependencyResolvers
 {
@@ -13,8 +8,12 @@ namespace HexagonalSample.Persistence.DependencyResolvers
     {
         public static void AddRepositoryService(this IServiceCollection services)
         {
-            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IAppUserRepository, AppUserRepository>();
+            services.AddScoped<IAppUserProfileRepository, AppUserProfileRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
         }
     }
 }
